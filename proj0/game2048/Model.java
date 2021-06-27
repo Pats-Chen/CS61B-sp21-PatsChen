@@ -143,38 +143,42 @@ public class Model extends Observable {
         // changed local variable to true.
         int idxMax = this.board.size() - 1;
         int idxMin = 0;
-        if (side == Side.NORTH) {
-            for (int j = idxMax; j >= idxMin; j -= 1) {
-                for (int i = idxMax; i >= idxMin; i -= 1) {
-                    if (j == idxMax) {
-                        continue;
-                    } else if (this.board.tile(i, j) == null) {
-                        continue;
-                    } else {
-                        Tile t = this.board.tile(i, j);
-                        for (int v = idxMin + 1; v <= idxMax; v += 1) {
-                            if (j + v > idxMax) {
-                                break;
-                            } else if (this.board.tile(i, j + v) == null) {
-                                if (j + v < idxMax) {
-                                    continue;
-                                } else if (j + v == idxMax) {
-                                    this.board.move(i, j + v, t);
-                                    changed = true;
-                                }
-                            } else if (this.board.tile(i, j + v).value() != t.value()) {
-                                this.board.move(i, j + v - 1, t);
-                                changed = true;
-                            } else if (this.board.tile(i, j + v).value() == t.value()) {
+        if (side != Side.NORTH) {
+            this.board.setViewingPerspective(side);
+        }
+        for (int j = idxMax; j >= idxMin; j -= 1) {
+            for (int i = 3; i >= idxMin; i -= 1) {
+                if (j == idxMax) {
+                    continue;
+                } else if (this.board.tile(i, j) == null) {
+                    continue;
+                } else {
+                    Tile t = this.board.tile(i, j);
+                    for (int v = idxMin + 1; v <= idxMax; v += 1) {
+                        if (j + v > idxMax) {
+                            break;
+                        } else if (this.board.tile(i, j + v) == null) {
+                            if (j + v < idxMax) {
+                                continue;
+                            } else if (j + v == idxMax) {
                                 this.board.move(i, j + v, t);
                                 changed = true;
-                                this.score += t.value() * 2;
-                                idxMax = j + v - 1;
                             }
+                        } else if (this.board.tile(i, j + v).value() != t.value()) {
+                            this.board.move(i, j + v - 1, t);
+                            changed = true;
+                        } else if (this.board.tile(i, j + v).value() == t.value()) {
+                            this.board.move(i, j + v, t);
+                            changed = true;
+                            this.score += t.value() * 2;
+                            idxMax = j + v - 1;
                         }
                     }
                 }
             }
+        }
+        if (side != Side.NORTH) {
+            this.board.setViewingPerspective(Side.NORTH);
         }
 
         checkGameOver();
