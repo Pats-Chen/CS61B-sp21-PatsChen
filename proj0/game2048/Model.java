@@ -144,15 +144,15 @@ public class Model extends Observable {
         int idxMax = this.board.size() - 1;
         int idxMin = 0;
         if (side == Side.NORTH) {
-            for (int j = idxMax; j >= 0; j -= 1) {
-                for (int i = idxMax; i >= 0; i -= 1) {
+            for (int j = idxMax; j >= idxMin; j -= 1) {
+                for (int i = idxMax; i >= idxMin; i -= 1) {
                     if (j == idxMax) {
                         continue;
                     } else if (this.board.tile(i, j) == null) {
                         continue;
                     } else {
                         Tile t = this.board.tile(i, j);
-                        for (int v = 1; v <= idxMax; v += 1) {
+                        for (int v = idxMin + 1; v <= idxMax; v += 1) {
                             if (j + v > idxMax) {
                                 break;
                             } else if (this.board.tile(i, j + v) == null) {
@@ -169,6 +169,7 @@ public class Model extends Observable {
                                 this.board.move(i, j + v, t);
                                 changed = true;
                                 this.score += t.value() * 2;
+                                idxMax = j + v - 1;
                             }
                         }
                     }
