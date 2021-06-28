@@ -146,15 +146,16 @@ public class Model extends Observable {
         if (side != Side.NORTH) {
             this.board.setViewingPerspective(side);
         }
-        for (int j = idxMax; j >= idxMin; j -= 1) {
-            for (int i = 3; i >= idxMin; i -= 1) {
-                if (j == idxMax) {
+        for (int i = 3; i >= idxMin; i -= 1) {
+            idxMax = 3;
+            for (int j = 3; j >= idxMin; j -= 1) {
+                if (j == 3) {
                     continue;
                 } else if (this.board.tile(i, j) == null) {
                     continue;
                 } else {
                     Tile t = this.board.tile(i, j);
-                    for (int v = idxMin + 1; v <= idxMax; v += 1) {
+                    for (int v = idxMin + 1; v <= 3; v += 1) {
                         if (j + v > idxMax) {
                             break;
                         } else if (this.board.tile(i, j + v) == null) {
@@ -167,11 +168,13 @@ public class Model extends Observable {
                         } else if (this.board.tile(i, j + v).value() != t.value()) {
                             this.board.move(i, j + v - 1, t);
                             changed = true;
+                            break;
                         } else if (this.board.tile(i, j + v).value() == t.value()) {
                             this.board.move(i, j + v, t);
                             changed = true;
                             this.score += t.value() * 2;
                             idxMax = j + v - 1;
+                            break;
                         }
                     }
                 }
