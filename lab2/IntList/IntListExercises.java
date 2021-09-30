@@ -1,5 +1,7 @@
 package IntList;
 
+import net.sf.saxon.functions.ConstantFunction;
+
 public class IntListExercises {
 
     /**
@@ -8,9 +10,10 @@ public class IntListExercises {
      *
      * @param lst IntList from Lecture
      */
+    /** Modification: change head.rest in the while loop to head. */
     public static void addConstant(IntList lst, int c) {
         IntList head = lst;
-        while (head.rest != null) {
+        while (head != null) {
             head.first += c;
             head = head.rest;
         }
@@ -26,7 +29,9 @@ public class IntListExercises {
     public static void setToZeroIfMaxFEL(IntList L) {
         IntList p = L;
         while (p != null) {
-            if (firstDigitEqualsLastDigit(max(p))) {
+            int currentMax = max(p);
+            boolean firstDigitEqualsLast = firstDigitEqualsLastDigit(currentMax);
+            if (firstDigitEqualsLast) {
                 p.first = 0;
             }
             p = p.rest;
@@ -49,9 +54,12 @@ public class IntListExercises {
     /** Returns true if the last digit of x is equal to
      *  the first digit of x.
      */
+    /** Modification: changed x > 10 in the while loop to x >= 10,
+     *  to solve corner case.
+     */
     public static boolean firstDigitEqualsLastDigit(int x) {
         int lastDigit = x % 10;
-        while (x > 10) {
+        while (x >= 10) {
             x = x / 10;
         }
         int firstDigit = x % 10;
@@ -71,12 +79,16 @@ public class IntListExercises {
             return false;
         }
 
-        boolean currElemIsPrime = Primes.isPrime(lst.first);
-
-        if (currElemIsPrime) {
-            lst.first *= lst.first;
+        IntList pointer = lst;
+        boolean someElemIsPrime = false;
+        for (int i = 0; i < lst.iterativeSize(); i += 1) {
+            boolean currElemIsPrime = Primes.isPrime(pointer.first);
+            if (currElemIsPrime) {
+                pointer.first *= pointer.first;
+                someElemIsPrime = true;
+            }
+            pointer = pointer.rest;
         }
-
-        return currElemIsPrime || squarePrimes(lst.rest);
+        return someElemIsPrime;
     }
 }
