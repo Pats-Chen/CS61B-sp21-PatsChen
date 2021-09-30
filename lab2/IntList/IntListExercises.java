@@ -81,7 +81,7 @@ public class IntListExercises {
 
         IntList pointer = lst;
         boolean someElemIsPrime = false;
-        for (int i = 0; i < lst.iterativeSize(); i += 1) {
+        while(pointer != null) {
             boolean currElemIsPrime = Primes.isPrime(pointer.first);
             if (currElemIsPrime) {
                 pointer.first *= pointer.first;
